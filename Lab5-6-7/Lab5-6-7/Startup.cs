@@ -1,4 +1,5 @@
 using Lab5_6_7.Data;
+using Lab5_6_7.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,9 @@ namespace Lab5_6_7
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register hasher before identity
+            services.AddTransient<IPasswordHasher<IdentityUser>, ShaArgon2PasswordHasher>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
