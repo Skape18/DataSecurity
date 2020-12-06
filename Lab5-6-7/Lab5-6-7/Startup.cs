@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Lab5_6_7.Options;
 
 namespace Lab5_6_7
 {
@@ -29,14 +30,27 @@ namespace Lab5_6_7
         public void ConfigureServices(IServiceCollection services)
         {
             // Register hasher before identity
-            services.AddTransient<IPasswordHasher<IdentityUser>, ShaArgon2PasswordHasher>();
+            services.AddTransient<IPasswordHasher<IdentityUser>, BcryptPasswordHasher<IdentityUser>>();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options =>
+                {
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireNonAlphanumeric = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequiredUniqueChars = 3;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services
+                .AddOptions<CustomPasswordHasherOptions>(CustomPasswordHasherOptions.SectionName)
+                .Validate(options => PasswordHasherVersion.Versions.Contains(options.Version));
+
             services.AddRazorPages();
         }
 
