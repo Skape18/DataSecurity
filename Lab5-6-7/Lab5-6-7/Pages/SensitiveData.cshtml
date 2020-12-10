@@ -1,0 +1,20 @@
+﻿@page
+@model Lab5_6_7.Pages.SensitiveDataModel
+@{
+    ViewData["Title"] = "Sensitive Data";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form id="account" method="post">
+    <h4>Use a local account to log in.</h4>
+    <hr />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-group">
+        <label asp-for="Input.SensitiveData"></label>
+        <input asp-for="Input.SensitiveData" class="form-control" />
+        <span asp-validation-for="Input.SensitiveData" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Encrypt Me</button>
+    </div>
+</form>

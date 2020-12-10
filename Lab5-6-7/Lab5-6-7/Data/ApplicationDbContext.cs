@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Lab5_6_7.Models.Entities;
 
 namespace Lab5_6_7.Data
 {
@@ -12,5 +13,7 @@ namespace Lab5_6_7.Data
             : base(options)
         {
         }
+
+        public DbSet<SensitiveData> SensitiveData { get; set; }
     }
 }

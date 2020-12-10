@@ -13,7 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Identity;
 using Lab5_6_7.Options;
+using Microsoft.Extensions.Azure;
 
 namespace Lab5_6_7
 {
@@ -31,6 +33,15 @@ namespace Lab5_6_7
         {
             // Register hasher before identity
             services.AddTransient<IPasswordHasher<IdentityUser>, BcryptPasswordHasher<IdentityUser>>();
+            services.AddScoped<ISensitiveDataService, SensitiveDataService>();
+            services.AddScoped<IEncryptionKeyProvider, EncryptionKeyProvider>();
+
+            services.AddAzureClients(builder =>
+            {
+                builder.AddSecretClient(new Uri("https://DataSecurityLab5.vault.azure.net"));
+
+                builder.UseCredential(new DefaultAzureCredential());
+            });
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
