@@ -23,7 +23,7 @@ namespace Lab5_6_7.Services
 
             return _options.Version switch
             {
-                PasswordHasherVersion.V1 => PasswordHasherVersion.V1 + BCrypt.Net.BCrypt.EnhancedHashPassword(password),
+                PasswordHasherVersion.V1 => $"{PasswordHasherVersion.V1}.{BCrypt.Net.BCrypt.HashPassword($"{password}")}",
                 _ => throw new ArgumentOutOfRangeException(nameof(_options.Version),
                     "No such password hasher version exists.")
             };
@@ -42,11 +42,14 @@ namespace Lab5_6_7.Services
                 throw new ArgumentNullException(nameof(providedPassword));
             }
 
-            var version = versionAndHashedPassword.Substring(0, 4);
+            var versionIdentifierLength = PasswordHasherVersion.VersionIdentifierLength;
+            var version = versionAndHashedPassword.Substring(0, versionIdentifierLength);
+            var hashedPassword = versionAndHashedPassword.Substring(versionIdentifierLength + 1, versionAndHashedPassword.Length - versionIdentifierLength - 1);
+            providedPassword = $"{_options.Pepper}.{providedPassword}";
+
             var isVerified = version switch
             {
-                PasswordHasherVersion.V1 => BCrypt.Net.BCrypt.EnhancedVerify(providedPassword,
-                                       versionAndHashedPassword.Substring(4, versionAndHashedPassword.Length - 4)),
+                PasswordHasherVersion.V1 => BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword),
                 _ => false,
             };
 

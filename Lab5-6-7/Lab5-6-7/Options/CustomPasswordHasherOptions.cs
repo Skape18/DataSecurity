@@ -8,16 +8,16 @@ namespace Lab5_6_7.Options
     public class CustomPasswordHasherOptions
     {
         public string Version { get; set; }
+        public string Pepper { get; set; }
 
-        public static string SectionName = "PasswordHasherVersion";
+        public static string SectionName = "CustomPasswordHasherOptions";
     }
 
     public static class PasswordHasherVersion
     {
         public static string[] Versions = { V1 };
-        public static int VersionIdentifierLength => 4;
+        public static int VersionIdentifierLength => 3;
 
-        public const string V1 = "0001";
-
+        public const string V1 = "001";
     }
 }

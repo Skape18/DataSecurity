@@ -56,10 +56,13 @@ namespace Lab5_6_7
                     options.Password.RequiredLength = 8;
                     options.Password.RequiredUniqueChars = 3;
                 })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddPasswordValidator<MaxLengthPasswordValidator<IdentityUser>>()
+                .AddPasswordValidator<Top100PasswordValidator<IdentityUser>>();
 
             services
-                .AddOptions<CustomPasswordHasherOptions>(CustomPasswordHasherOptions.SectionName)
+                .AddOptions<CustomPasswordHasherOptions>()
+                .Bind(Configuration.GetSection(CustomPasswordHasherOptions.SectionName))
                 .Validate(options => PasswordHasherVersion.Versions.Contains(options.Version));
 
             services.AddRazorPages();
