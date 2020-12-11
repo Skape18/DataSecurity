@@ -58,15 +58,13 @@ namespace Lab5_6_7.Services
             byte[] plainBytes = Encoding.UTF8.GetBytes(plain);
 
             // Get parameter sizes
-            int nonceSize = AesGcm.NonceByteSizes.MaxSize;
-            int tagSize = AesGcm.TagByteSizes.MaxSize;
+            int nonceSize = 12;
+            int tagSize = 16;
             int cipherSize = plainBytes.Length;
 
             // We write everything into one big array for easier encoding
             int encryptedDataLength = 4 + nonceSize + 4 + tagSize + cipherSize;
-            Span<byte> encryptedData = encryptedDataLength < 1024
-                ? stackalloc byte[encryptedDataLength]
-                : new byte[encryptedDataLength].AsSpan();
+            Span<byte> encryptedData = new byte[encryptedDataLength].AsSpan();
 
             // Copy parameters
             BinaryPrimitives.WriteInt32LittleEndian(encryptedData.Slice(0, 4), nonceSize);
